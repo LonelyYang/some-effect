@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		#myCanvas{
+			border:1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="500px" height="500px"></canvas>
+	<script>
+		var rand = (min,max) => Math.floor(Math.random()*(max-min)+min)
+		
+		var myCanvas = document.getElementById("myCanvas");
+		var ctx = myCanvas.getContext("2d");
+
+		const canvasWidth = myCanvas.width;
+		const canvasHeight = myCanvas.height;
+
+		class Ball{
+			constructor(ctx, width, height){
+				this.ctx = ctx;
+				//颜色
+				this.color = `rgb(${rand(1,255)},${rand(1,255)},${rand(1,255)})`;
+				//半径
+				var r = rand(10,30)
+				this.r = r;
+
+				//可移动的峰值
+				this.maxWidth = width-r
+				this.maxHeight = height-r
+
+				//坐标
+				this.x = rand(r, this.maxWidth)
+				this.y = rand(r, this.maxHeight)
+
+				// 速度
+				var speedX = rand(2,6);
+				var speedY = rand(2,6);
+				this.speedX = rand(0,2)>0?speedX:-speedX;
+				this.speedY = rand(0,2)>0?speedY:-speedY;
+			}
+
+			draw(){
+				this.ctx.beginPath();
+				this.ctx.fillStyle = this.color;
+				this.ctx.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+				this.ctx.closePath();
+				this.ctx.fill();
+			}
+
+			move(){
+				this.x += this.speedX;
+				this.y += this.speedY;
+				if(this.x >= this.maxWidth || this.x <= this.r ){
+					this.speedX *= -1
+				}
+				if(this.y >= this.maxHeight || this.y <= this.r){
+					this.speedY *= -1
+				}
+			}
+		}
+
+		var balls = [];
+		for(let i = 0;i<180;i++){
+			let ball = new Ball(ctx,canvasWidth,canvasHeight);
+			balls.push(ball);
+		}
+
+		
+
+		setInterval(function () {
+			ctx.clearRect(0,0,canvasWidth,canvasHeight)
+			
+			for(let i = 0;i<balls.length;i++){
+				balls[i].draw();
+				balls[i].move();
+			}
+		},30)
+		
+		
+	</script>
+</body>
+</html>
